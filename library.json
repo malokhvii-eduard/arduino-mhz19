@@ -1,0 +1,38 @@
+{
+  "name": "arduino-mhz19",
+  "version": "1.0.0",
+  "description": "Arduino library for Winsen MH-Z19 – infrared carbon dioxide sensor. The library allows using the sensor over hardware or software UART on any board that supports Arduino.",
+  "keywords": [
+    "arduino",
+    "winsen",
+    "mhz19",
+    "mhz19b",
+    "uart",
+    "carbon-dioxide",
+    "co2"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Eduard Malokhvii",
+      "email": "malokhvii.ee@gmail.com",
+      "url": "https://github.com/malokhvii-eduard"
+    }
+  ],
+  "homepage": "https://github.com/malokhvii-eduard/arduino-mhz19",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/malokhvii-eduard/arduino-mhz19.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "*",
+  "dependencies": {},
+  "export": {
+    "include": [
+      "LICENSE",
+      "include",
+      "src",
+      "examples/**/*.ino"
+    ]
+  }
+}
