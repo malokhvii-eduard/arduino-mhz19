@@ -6,7 +6,7 @@
   <p align="center">
     The library allows using the sensor over
     hardware or software
-    <a href="https://en.wikipedia.org/wiki Universal_asynchronous_receiver-transmitter"
+    <a href="https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter"
       aria-label="UART">UART</a>
     on any board that supports
     <a href="https://platformio.org/frameworks/arduino"
