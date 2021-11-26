@@ -1,0 +1,180 @@
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
+
+<div align="center">
+  <h2 align="center">💨 Arduino library for Winsen MH-Z19</h2>
+  <p align="center">
+    The library allows using the sensor over
+    hardware or software
+    <a href="https://en.wikipedia.org/wiki Universal_asynchronous_receiver-transmitter"
+      aria-label="UART">UART</a>
+    on any board that supports
+    <a href="https://platformio.org/frameworks/arduino"
+      aria-label="Arduino Framework">Arduino</a>.
+  </p>
+
+  <p id="shields" align="center" markdown="1">
+
+[![License](https://img.shields.io/badge/license-MIT-3178C6?style=flat)](LICENSE)
+[![Style Guide](https://img.shields.io/badge/code%20style-~google-4285F4?style=flat)][google-cppguide]
+![clang-format](https://img.shields.io/badge/formatter-clang--format-262D3A?style=flat)
+[![markdownlint](https://img.shields.io/badge/linter-markdownlint-000?style=flat)][github-markdownlint]
+[![Tested on Arduino Uno](https://img.shields.io/badge/tested%20on-arduino%20uno-00979D)][arduino-uno]
+[![Tested on Arduino Nano](https://img.shields.io/badge/tested%20on-arduino%20nano-00979D)][arduino-nano]
+[![Tested on NodeMCU](https://img.shields.io/badge/tested%20on-nodemcu-E7352C)][nodemcu]
+[![Tested on Wemos D1](https://img.shields.io/badge/tested%20on-wemos%20d1-E7352C)][wemos-d1]
+![Code Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![CI Workflow](https://github.com/malokhvii-eduard/arduino-mhz19/actions/workflows/ci.yml/badge.svg)
+[![Release Workflow](https://github.com/malokhvii-eduard/arduino-mhz19/actions/workflows/release.yml/badge.svg)](https://github.com/malokhvii-eduard/arduino-mhz19/releases)
+
+  </p>
+</div>
+
+---
+
+## :tada: Features
+
+- :rocket: Easy to use
+- :clamp: Zero dependencies
+- :gear:  Hardware or software [UART][uart]
+- :test_tube: 100% code coverage
+- :alembic: Tested on: [Arduino Uno][arduino-uno], [Arduino Nano][arduino-nano],
+[NodeMCU][nodemcu], [Wemos D1][wemos-d1]
+
+## :sparkles: Getting Started
+
+### :package: Installation
+
+<details>
+  <summary>
+    👉 PlatformIO
+  </summary>
+  <br>
+
+Run `pio lib install "malokhvii-eduard/arduino-mhz19"` or declare in
+`platformio.ini` configuration file using `lib_deps`
+[option][platformio-lib-deps]. Enjoy! :tada::+1:
+
+</details>
+
+<details>
+  <summary>
+    👉 Arduino IDE
+  </summary>
+  <br>
+
+Download `Mhz19.zip` from release assets. Once downloaded, go to the
+[Arduino IDE][github-arduino-ide] and click
+`Sketch > Include Library > Add .zip Library`. In the file dialogue that opens,
+locate your downloaded ZIP file. Afterward, you should receive a
+`Library Added` message just above the debug window. Enjoy! :tada::+1:
+
+</details>
+
+### :eyes: Usage
+
+There are various [examples](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/examples)
+to demonstrate usage of the library. The examples are listed below:
+
+- [HardwareSerial.ino](examples/HardwareSerial/HardwareSerial.ino) &ndash; read
+carbon dioxide over hardware [UART][uart]
+- [SoftwareSerial.ino](examples/SoftwareSerial/SoftwareSerial.ino) &ndash; read
+carbon dioxide over software [UART][uart]
+
+## :question: FAQs
+
+<!-- FAQ 1 -->
+### :raising_hand_man: In which units carbon dioxide is measured?
+<!-- markdownlint-enable MD013 -->
+
+:point_right: The carbon dioxide is measured in
+[parts-per-million][parts-per-notation] (*symbol:* `ppm`).
+
+<!-- FAQ 2 -->
+### :raising_hand_man: How to set a measuring range?
+
+:point_right: You can set a measuring range by call of
+`Mhz19::setMeasuringRange()`. The measuring ranges are listed below:
+
+- `Mhz19MeasuringRange::Ppm_1000`
+- `Mhz19MeasuringRange::Ppm_2000`
+- `Mhz19MeasuringRange::Ppm_3000`
+- `Mhz19MeasuringRange::Ppm_5000`
+- `Mhz19MeasuringRange::Ppm_10000`
+
+<!-- FAQ 3 -->
+### :raising_hand_man: How does it work?
+
+:point_right: You can explore [unit tests](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/test/native)
+to see the behavior of all library members.
+
+## :hammer_and_wrench: Tech Stack
+
+<!-- markdownlint-disable MD013 -->
+[![EditorConfig](https://img.shields.io/badge/EditorConfig-FEFEFE?logo=editorconfig&logoColor=000&style=flat)][editorconfig]
+![Markdown](https://img.shields.io/badge/Markdown-000?logo=markdown&logoColor=fff&style=flat)
+![C++](https://img.shields.io/badge/C%2B%2B-00599C?logo=cplusplus&logoColor=fff&style=flat)
+[![PlatformIO](https://img.shields.io/badge/PlatformIO-FF7F00?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjUwMCIgaGVpZ2h0PSIyNTAwIiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCI+PHBhdGggZD0iTTEyOCAwQzkzLjgxIDAgNjEuNjY2IDEzLjMxNCAzNy40OSAzNy40OSAxMy4zMTQgNjEuNjY2IDAgOTMuODEgMCAxMjhjMCAzNC4xOSAxMy4zMTQgNjYuMzM0IDM3LjQ5IDkwLjUxQzYxLjY2NiAyNDIuNjg2IDkzLjgxIDI1NiAxMjggMjU2YzM0LjE5IDAgNjYuMzM0LTEzLjMxNCA5MC41MS0zNy40OUMyNDIuNjg2IDE5NC4zMzQgMjU2IDE2Mi4xOSAyNTYgMTI4YzAtMzQuMTktMTMuMzE0LTY2LjMzNC0zNy40OS05MC41MUMxOTQuMzM0IDEzLjMxNCAxNjIuMTkgMCAxMjggMCIgZmlsbD0iI0ZGN0YwMCIvPjxwYXRoIGQ9Ik0yNDkuMzg2IDEyOGMwIDY3LjA0LTU0LjM0NyAxMjEuMzg2LTEyMS4zODYgMTIxLjM4NkM2MC45NiAyNDkuMzg2IDYuNjEzIDE5NS4wNCA2LjYxMyAxMjggNi42MTMgNjAuOTYgNjAuOTYgNi42MTQgMTI4IDYuNjE0YzY3LjA0IDAgMTIxLjM4NiA1NC4zNDYgMTIxLjM4NiAxMjEuMzg2IiBmaWxsPSIjRkZGIi8+PHBhdGggZD0iTTE2MC44NjkgNzQuMDYybDUuMTQ1LTE4LjUzN2M1LjI2NC0uNDcgOS4zOTItNC44ODYgOS4zOTItMTAuMjczIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzJzLTEwLjMyIDQuNjItMTAuMzIgMTAuMzJjMCAzLjc1NSAyLjAxMyA3LjAzIDUuMDEgOC44MzdsLTUuMDUgMTguMTk1Yy0xNC40MzctMy42Ny0yNi42MjUtMy4zOS0yNi42MjUtMy4zOWwtMi4yNTggMS4wMXYxNDAuODcybDIuMjU4Ljc1M2MxMy42MTQgMCA3My4xNzctNDEuMTMzIDczLjMyMy04NS4yNyAwLTMxLjYyNC0yMS4wMjMtNDUuODI1LTQwLjU1NS01Mi4xOTd6TTE0Ni41MyAxNjQuOGMtMTEuNjE3LTE4LjU1Ny02LjcwNi02MS43NTEgMjMuNjQzLTY3LjkyNSA4LjMyLTEuMzMzIDE4LjUwOSA0LjEzNCAyMS41MSAxNi4yNzkgNy41ODIgMjUuNzY2LTM3LjAxNSA2MS44NDUtNDUuMTUzIDUxLjY0NnptMTguMjE2LTM5Ljc1MmE5LjM5OSA5LjM5OSAwIDAgMC05LjM5OSA5LjM5OSA5LjM5OSA5LjM5OSAwIDAgMCA5LjQgOS4zOTkgOS4zOTkgOS4zOTkgMCAwIDAgOS4zOTgtOS40IDkuMzk5IDkuMzk5IDAgMCAwLTkuMzk5LTkuMzk4em0yLjgxIDguNjcyYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDkgMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OXoiIGZpbGw9IiNFNTcyMDAiLz48cGF0aCBkPSJNMTAxLjM3MSA3Mi43MDlsLTUuMDIzLTE4LjkwMWMyLjg3NC0xLjgzMiA0Ljc4Ni01LjA0IDQuNzg2LTguNzAxIDAtNS43LTQuNjItMTAuMzItMTAuMzItMTAuMzItNS42OTkgMC0xMC4zMTkgNC42Mi0xMC4zMTkgMTAuMzIgMCA1LjY4MiA0LjU5MiAxMC4yODkgMTAuMjY3IDEwLjMxN0w5NS44IDc0LjM3OGMtMTkuNjA5IDYuNTEtNDAuODg1IDIwLjc0Mi00MC44ODUgNTEuODguNDM2IDQ1LjAxIDU5LjU3MiA4NS4yNjcgNzMuMTg2IDg1LjI2N1Y2OC44OTJzLTEyLjI1Mi0uMDYyLTI2LjcyOSAzLjgxN3ptMTAuMzk1IDkyLjA5Yy04LjEzOCAxMC4yLTUyLjczNS0yNS44OC00NS4xNTQtNTEuNjQ1IDMuMDAyLTEyLjE0NSAxMy4xOS0xNy42MTIgMjEuNTExLTE2LjI4IDMwLjM1IDYuMTc1IDM1LjI2IDQ5LjM2OSAyMy42NDMgNjcuOTI2em0tMTguODItMzkuNDZhOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTkgOS4zOTggOS4zOTkgOS4zOTkgMCAwIDAgOS40IDkuNCA5LjM5OSA5LjM5OSAwIDAgMCA5LjM5OC05LjQgOS4zOTkgOS4zOTkgMCAwIDAtOS4zOTktOS4zOTl6bS0yLjgxIDguNjcxYTIuMzc0IDIuMzc0IDAgMSAxIDAtNC43NDggMi4zNzQgMi4zNzQgMCAwIDEgMCA0Ljc0OHoiIGZpbGw9IiNGRjdGMDAiLz48L3N2Zz4=&logoColor=fff&style=flat)][github-platformio]
+[![Arduino](https://img.shields.io/badge/Arduino-00979D?logo=arduino&logoColor=fff&style=flat)][github-arduino]
+[![Google Test](https://img.shields.io/badge/Google%20Test-4285F4?logo=google&logoColor=fff&style=flat)][github-googletest]
+[![gcovr](https://img.shields.io/badge/gcovr-A42E2B?logo=gnu&logoColor=fff&style=flat)][github-gcovr]
+![clang-format](https://img.shields.io/badge/clang--format-262D3A?logo=llvm&logoColor=fff&style=flat)
+[![markdownlint](https://img.shields.io/badge/markdownlint-000?logo=markdown&logoColor=fff&style=flat)][github-markdownlint]
+[![MH-Z19](https://img.shields.io/badge/MH--Z19-2088FF?logo=weasyl&logoColor=fff&style=flat)][winsen-mhz19-datasheet]
+[![Shields.io](https://img.shields.io/badge/Shields.io-000?logo=shieldsdotio&logoColor=fff&style=flat)][shields]
+[![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=fff&style=flat)][git-scm]
+[![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=fff&style=flat)][github]
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=fff&style=flat)][github-actions]
+<!-- markdownlint-enable MD013 -->
+
+## :writing_hand: Contributing
+
+:+1::tada: *First off, thanks for taking the time to contribute!* :tada::+1:
+
+Contributions are what make the open source community such an amazing place to
+be learn, inspire, and create. Any contributions you make are **greatly
+appreciated**.
+
+1. Fork the *Project*
+2. Create your *Feature Branch* (`git checkout -b feature/awesome-feature`)
+3. Commit your *Changes* (`git commit -m 'Add awesome feature'`)
+4. Push to the *Branch* (`git push origin feature/awesome-feature`)
+5. Open a *Pull Request*
+
+## :sparkling_heart: Like this project?
+
+Leave a :star: if you think this project is cool or useful for you.
+
+## :warning: License
+
+`arduino-mhz1` is licenced under the MIT License. See the [LICENSE](LICENSE)
+for more information.
+
+<!-- markdownlint-disable MD013 -->
+<!-- Github links -->
+[github-actions]: https://docs.github.com/en/actions
+[github-arduino-ide]:  https://github.com/arduino/Arduino
+[github-arduino]: https://github.com/arduino
+[github-gcovr]: https://github.com/gcovr/gcovr
+[github-googletest]: https://github.com/google/googletest
+[github-linux]: https://github.com/torvalds/linux
+[github-markdownlint]: https://github.com/DavidAnson/markdownlint
+[github-platformio]: https://github.com/platformio
+[github-simple-icons]: https://github.com/simple-icons/simple-icons
+[github]: https://github.com
+
+<!-- Other links -->
+[arduino-nano]: https://store.arduino.cc/collections/boards/products/arduino-nano
+[arduino-uno]: https://store.arduino.cc/products/arduino-uno-rev3
+[editorconfig]: https://editorconfig.org
+[git-scm]: https://git-scm.com
+[google-cppguide]: https://google.github.io/styleguide/cppguide.html
+[nodemcu]: https://en.wikipedia.org/wiki/NodeMCU
+[parts-per-notation]: https://en.wikipedia.org/wiki/Parts-per_notation
+[platformio-lib-deps]: https://docs.platformio.org/en/latest/projectconf/section_env_library.html#lib-deps
+[platformio-lib-install]: https://docs.platformio.org/en/latest/core/userguide/lib/cmd_install.html
+[platformio-registry]: https://platformio.org/lib
+[shields]: https://shields.io
+[uart]: https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter
+[wemos-d1]: https://www.wemos.cc/en/latest/d1/d1_mini.html
+[winsen-mhz19-datasheet]: https://www.winsen-sensor.com/d/files/PDF/Infrared%20Gas%20Sensor/NDIR%20CO2%20SENSOR/MH-Z19%20CO2%20Ver1.0.pdf
