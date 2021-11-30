@@ -2,7 +2,7 @@
 <!-- markdownlint-disable MD041 -->
 
 <div align="center">
-  <h2 align="center">☁️ Arduino library for Winsen MH-Z19</h2>
+  <h2 align="center">💥 Arduino library for Winsen MH-Z19</h2>
   <p align="center">
     The library allows using the sensor over
     hardware or software
