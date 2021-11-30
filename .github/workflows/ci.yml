@@ -3,10 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - "*"
+      - master
     tags-ignore:
-      - "v*"
-  pull_request:
+      - v*
 
 jobs:
   lint:
