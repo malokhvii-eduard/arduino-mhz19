@@ -1,30 +1,21 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_run:
+    workflows: ["CI"]
+    type:
+      - complete
 
 jobs:
-  release:
-    name: 🔖 Release
+  semantic-release:
+    name: 📦🚀 Semantic Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: true
-          prerelease: false
       - name: Install Zip
         run: sudo apt-get install zip
-      - name: Convert library to Arduino IDE compatible format
+      - name: Create library in compatible format for Arduino IDE
         run: |
           mkdir -p Mhz19/src
           mkdir -p Mhz19/examples/HardwareSerial
@@ -36,12 +27,11 @@ jobs:
           cp examples/HardwareSerial/*.ino Mhz19/examples/HardwareSerial
           cp examples/SoftwareSerial/*.ino Mhz19/examples/SoftwareSerial
           zip -r Mhz19.zip Mhz19/*
-      - name: Add release asset Mhz19.zip
-        uses: actions/upload-release-asset@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+      - name: Install plugins for semantic-release
+        run: npm install @semantic-release/changelog @semantic-release/git
+      - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_name: Mhz19.zip
-          asset_path: ./Mhz19.zip
-          asset_content_type: application/zip
+        run: npx semantic-release
