@@ -28,7 +28,7 @@
           "assets": [
             {
               "path": "Mhz19.zip",
-              "label": "Library in compatible format for Arduino IDE"
+              "label": "Mhz19.zip"
             }
           ]
         }
