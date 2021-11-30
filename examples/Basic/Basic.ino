@@ -11,16 +11,21 @@ void setup() {
 
   sensor.begin(&softwareSerial);
   sensor.setMeasuringRange(Mhz19MeasuringRange::Ppm_5000);
-  sensor.enableAutoCalibration();
+  sensor.enableAutoBaseCalibration();
 
-  Serial.println("Pre-heating...");
-  delay(180000);  // Pre-heating, 3 minutes
+  Serial.println("Preheating...");  // Preheating, 3 minutes
+  while (!sensor.isReady()) {
+    delay(50);
+  }
+
   Serial.println("Ready...");
 }
 
 void loop() {
-  auto carbonDioxide = String(sensor.getCarbonDioxide()) + " ppm";
-  Serial.println(carbonDioxide);
+  auto carbonDioxide = sensor.getCarbonDioxide();
+  if (carbonDioxide >= 0) {
+    Serial.println(String(carbonDioxide) + " ppm");
+  }
 
-  delay(30000);
+  delay(20000);
 }
