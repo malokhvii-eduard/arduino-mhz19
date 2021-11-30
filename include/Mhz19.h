@@ -3,78 +3,69 @@
 
 #include <stdint.h>
 
-#ifndef ARDUINO_MHZ19_SERIAL_TIMEOUT
-#define ARDUINO_MHZ19_SERIAL_TIMEOUT 500
-#endif
-
 #ifndef ARDUINO_MHZ19_UNIT_TEST
 /* Arduino */
 #include <Arduino.h>
 
-#define __NOT_VIRTUAL_METHOD
+#define __NOT_VIRTUAL
 #else
 /* Mocks */
 #include <mocks/Arduino.h>
 
-#define __NOT_VIRTUAL_METHOD virtual
+#define __NOT_VIRTUAL virtual
 
 #define protected public
 #define private public
 #define final
 #endif
 
-namespace internal {
-
-enum Mhz19Command : uint8_t {
-  Mhz19CommandGetCarbonDioxide = 0x86,
-  Mhz19CommandSetMeasuringRange = 0x99,
-  Mhz19CommandSetAutoCalibration = 0x79,
-  Mhz19CommandCalibrateToZeroPoint = 0x87,
-  Mhz19CommandCalibrateToSpanPoint = 0x88
-};
-
-enum : size_t { Mhz19PacketLength = 9 };
-
-};  // namespace internal
+#ifndef MHZ19_PREHEATING_DURATION
+#define MHZ19_PREHEATING_DURATION 180000  // 3 minutes
+#endif
 
 enum class Mhz19MeasuringRange : uint16_t {
   Ppm_1000 = 1000,
   Ppm_2000 = 2000,
   Ppm_3000 = 3000,
-  Ppm_5000 = 5000,
-  Ppm_10000 = 10000
+  Ppm_5000 = 5000
 };
 
 class Mhz19 {
  public:
+  Mhz19();
+
 #ifdef ARDUINO_MHZ19_UNIT_TEST
-  virtual ~Mhz19();
+  __NOT_VIRTUAL ~Mhz19();
 #endif
 
-  void begin(Stream *serial);
+  void begin(Stream* serial);
 
-  int16_t getCarbonDioxide() const;
+  bool isReady() const;
+  int getCarbonDioxide() const;
 
-  void setMeasuringRange(const Mhz19MeasuringRange measuringRange);
-  void enableAutoCalibration();
-  void disableAutoCalibration();
+  bool setMeasuringRange(const Mhz19MeasuringRange measuringRange);
+  bool enableAutoBaseCalibration();
+  bool disableAutoBaseCalibration();
 
-  void calibrateToZeroPoint();
+  bool calibrateToZeroPoint();
   bool calibrateToSpanPoint(const uint16_t spanPoint);
 
  private:
-  static uint8_t calculatePacketCheckSum(const uint8_t *packet);
+  static const size_t PacketLength = 9;
+  static const uint8_t CommandRead[];
+  static const uint8_t CommandEnableAutoBaseCalibration[];
+  static const uint8_t CommandDisableAutoBaseCalibration[];
+  static const uint8_t CommandCalibrateToZeroPoint[];
 
-  __NOT_VIRTUAL_METHOD bool readPacket(const uint8_t command,
-                                       uint8_t *packet) const;
-  __NOT_VIRTUAL_METHOD void writePacket(
-      const uint8_t command, const uint8_t byte3, const uint8_t byte4,
-      const uint8_t byte5, const uint8_t byte6, const uint8_t byte7) const;
+  static uint8_t calculatePacketCheckSum(const uint8_t* packet);
 
-  Stream *serial_;
+  __NOT_VIRTUAL bool sendCommand(const uint8_t* command) const;
+
+  Stream* serial_;
+  mutable bool isPreheatingDone_;
 };
 
-#undef __NOT_VIRTUAL_METHOD
+#undef __NOT_VIRTUAL
 
 #ifdef ARDUINO_MHZ19_UNIT_TEST
 #undef protected

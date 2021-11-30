@@ -16,12 +16,6 @@ using SpanPointSnapshot = std::array<uint16_t, 3>;
 
 class Mhz19Test : public ::testing::Test {
  protected:
-  ::testing::StrictMock<StreamMock> serial;
-  ::testing::StrictMock<Mhz19Mock> sensor;
-};
-
-class Mhz19TestWithSerial : public ::testing::Test {
- protected:
   void SetUp() override {
     arduino = createArduinoMock();
     sensor.serial_ = &serial;
@@ -32,6 +26,8 @@ class Mhz19TestWithSerial : public ::testing::Test {
   ArduinoMock* arduino;
 
   ::testing::StrictMock<StreamMock> serial;
+  ::testing::StrictMock<Mhz19Mock> fakeSensor;
+
   Mhz19 sensor;
 };
 
@@ -44,8 +40,8 @@ class Mhz19TestWithMeasuringRange
 
     measuringRange =
         static_cast<Mhz19MeasuringRange>(measuringRangeSnapshot[0]);
-    low = measuringRangeSnapshot[1];
-    high = measuringRangeSnapshot[2];
+    high = measuringRangeSnapshot[1];
+    low = measuringRangeSnapshot[2];
   }
 
   Mhz19MeasuringRange measuringRange;
@@ -61,8 +57,8 @@ class Mhz19TestWithSpanPoint
     auto spanPointSnapshot = GetParam();
 
     spanPoint = spanPointSnapshot[0];
-    low = spanPointSnapshot[1];
-    high = spanPointSnapshot[2];
+    high = spanPointSnapshot[1];
+    low = spanPointSnapshot[2];
   }
 
   uint16_t spanPoint;

@@ -13,197 +13,254 @@ using ::testing::Return;
 using ::testing::Values;
 
 TEST_F(Mhz19Test, BeginsWithSerial) {
+  sensor.serial_ = nullptr;
+  EXPECT_FALSE(sensor.isPreheatingDone_);
   sensor.begin(&serial);
   EXPECT_EQ(sensor.serial_, &serial);
 }
 
-TEST_F(Mhz19Test, GetsCarbonDioxide) {
-  {
-    InSequence s;
-    EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandGetCarbonDioxide, 0,
-                                    0, 0, 0, 0));
-    EXPECT_CALL(sensor, readPacket(::internal::Mhz19CommandGetCarbonDioxide, _))
-        .WillOnce(Invoke([&](const uint8_t command, uint8_t* packet) {
-          packet[2] = 10;  // high
-          packet[3] = 25;  // low
-          return true;
-        }));
-  }
-
-  EXPECT_EQ(sensor.getCarbonDioxide(), 2585);
-
-  {
-    InSequence s;
-    EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandGetCarbonDioxide, 0,
-                                    0, 0, 0, 0));
-    EXPECT_CALL(sensor, readPacket(::internal::Mhz19CommandGetCarbonDioxide, _))
-        .WillOnce(Invoke([&](const uint8_t command, uint8_t* packet) {
-          packet[2] = 3;   // high
-          packet[3] = 15;  // low
-          return true;
-        }));
-  }
-
-  EXPECT_EQ(sensor.getCarbonDioxide(), 783);
+TEST_F(Mhz19Test, NotReadyWhenPreheatingInProgress) {
+  EXPECT_CALL(*arduino, millis()).WillOnce(Return(100));
+  EXPECT_FALSE(sensor.isReady());
 }
 
-TEST_F(Mhz19Test, GetsCarbonDioxideWhenReadsPacketWithError) {
+TEST_F(Mhz19Test, ReadyWhenPreheatingDone) {
+  EXPECT_CALL(*arduino, millis())
+      .WillOnce(Return(100))
+      .WillOnce(Return(MHZ19_PREHEATING_DURATION + 100));
+  EXPECT_FALSE(sensor.isReady());
+  EXPECT_TRUE(sensor.isReady());
+  EXPECT_TRUE(sensor.isReady());
+}
+
+TEST_F(Mhz19Test, GetsCarbonDioxideWhenReady) {
   {
     InSequence s;
-    EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandGetCarbonDioxide, 0,
-                                    0, 0, 0, 0));
-    EXPECT_CALL(sensor, readPacket(::internal::Mhz19CommandGetCarbonDioxide, _))
-        .WillOnce(Return(false));
+    EXPECT_CALL(*arduino, millis())
+        .WillOnce(Return(MHZ19_PREHEATING_DURATION + 100));
+    EXPECT_CALL(serial, write(Mhz19::CommandRead, Mhz19::PacketLength));
+    EXPECT_CALL(serial, available()).WillOnce(Return(Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0xFF;
+          packet[1] = Mhz19::CommandRead[2];
+          packet[2] = 3;
+          packet[3] = 5;
+          packet[4] = 7;
+          packet[5] = 9;
+          packet[6] = 11;
+          packet[7] = 13;
+          packet[8] = 74;
+          return Mhz19::PacketLength;
+        }));
+  }
+
+  EXPECT_EQ(sensor.getCarbonDioxide(), 773);
+}
+
+TEST_F(Mhz19Test, GetsCarbonDioxideWhenNotReady) {
+  EXPECT_CALL(*arduino, millis()).WillOnce(Return(100));
+  EXPECT_EQ(sensor.getCarbonDioxide(), -1);
+}
+
+TEST_F(Mhz19Test, GetsCarbonDioxideWhenUnavailableBytes) {
+  EXPECT_CALL(*arduino, millis())
+      .WillOnce(Return(MHZ19_PREHEATING_DURATION + 100));
+  EXPECT_CALL(serial, write(Mhz19::CommandRead, Mhz19::PacketLength));
+  EXPECT_CALL(serial, available()).WillOnce(Return(0));
+
+  EXPECT_EQ(sensor.getCarbonDioxide(), -1);
+}
+
+TEST_F(Mhz19Test, GetsCarbonDioxideWhenCorruptedStartingByte) {
+  {
+    InSequence s;
+    EXPECT_CALL(*arduino, millis())
+        .WillOnce(Return(MHZ19_PREHEATING_DURATION + 100));
+    EXPECT_CALL(serial, write(Mhz19::CommandRead, Mhz19::PacketLength));
+    EXPECT_CALL(serial, available()).WillOnce(Return(Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0;
+          return Mhz19::PacketLength;
+        }));
+  }
+
+  EXPECT_EQ(sensor.getCarbonDioxide(), -1);
+}
+
+TEST_F(Mhz19Test, GetsCarbonDioxideWhenCorruptedCommandByte) {
+  {
+    InSequence s;
+    EXPECT_CALL(*arduino, millis())
+        .WillOnce(Return(MHZ19_PREHEATING_DURATION + 100));
+    EXPECT_CALL(serial, write(Mhz19::CommandRead, Mhz19::PacketLength));
+    EXPECT_CALL(serial, available()).WillOnce(Return(Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0xFF;
+          packet[1] = 0;
+          return Mhz19::PacketLength;
+        }));
+  }
+
+  EXPECT_EQ(sensor.getCarbonDioxide(), -1);
+}
+
+TEST_F(Mhz19Test, GetsCarbonDioxideWhenWrongChecksum) {
+  {
+    InSequence s;
+    EXPECT_CALL(*arduino, millis())
+        .WillOnce(Return(MHZ19_PREHEATING_DURATION + 100));
+    EXPECT_CALL(serial, write(Mhz19::CommandRead, Mhz19::PacketLength));
+    EXPECT_CALL(serial, available()).WillOnce(Return(Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0xFF;
+          packet[1] = Mhz19::CommandCalibrateToZeroPoint[2];
+          packet[8] = 0;
+          return Mhz19::PacketLength;
+        }));
   }
 
   EXPECT_EQ(sensor.getCarbonDioxide(), -1);
 }
 
 TEST_P(Mhz19TestWithMeasuringRange, SetsMeasuringRange) {
-  EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandSetMeasuringRange, 0,
-                                  0, 0, low, high));
-  sensor.setMeasuringRange(measuringRange);
+  EXPECT_CALL(fakeSensor, sendCommand(_))
+      .WillOnce(Invoke([&](const uint8_t* command) {
+        EXPECT_EQ(command[0], 0xFF);
+        EXPECT_EQ(command[1], 0x01);
+        EXPECT_EQ(command[2], 0x99);
+        EXPECT_EQ(command[3], 0x00);
+        EXPECT_EQ(command[4], 0x00);
+        EXPECT_EQ(command[5], 0x00);
+        EXPECT_EQ(command[6], high);
+        EXPECT_EQ(command[7], low);
+        EXPECT_EQ(command[8], Mhz19::calculatePacketCheckSum(command));
+        return true;
+      }));
+
+  EXPECT_TRUE(fakeSensor.setMeasuringRange(measuringRange));
 }
 
-TEST_F(Mhz19Test, EnablesAutoCalibration) {
-  EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandSetAutoCalibration,
-                                  0xA0, 0, 0, 0, 0));
-  sensor.enableAutoCalibration();
+TEST_F(Mhz19Test, EnablesAutoBaseCalibration) {
+  EXPECT_CALL(fakeSensor, sendCommand(Mhz19::CommandEnableAutoBaseCalibration))
+      .WillOnce(Return(true));
+  EXPECT_TRUE(fakeSensor.enableAutoBaseCalibration());
 }
 
-TEST_F(Mhz19Test, DisablesAutoCalibration) {
-  EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandSetAutoCalibration, 0,
-                                  0, 0, 0, 0));
-  sensor.disableAutoCalibration();
+TEST_F(Mhz19Test, DisablesAutoBaseCalibration) {
+  EXPECT_CALL(fakeSensor, sendCommand(Mhz19::CommandDisableAutoBaseCalibration))
+      .WillOnce(Return(true));
+  EXPECT_TRUE(fakeSensor.disableAutoBaseCalibration());
 }
 
 TEST_F(Mhz19Test, CalibratesToZeroPoint) {
-  EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandCalibrateToZeroPoint,
-                                  0, 0, 0, 0, 0));
-  sensor.calibrateToZeroPoint();
+  EXPECT_CALL(fakeSensor, sendCommand(Mhz19::CommandCalibrateToZeroPoint))
+      .WillOnce(Return(true));
+  EXPECT_TRUE(fakeSensor.calibrateToZeroPoint());
 }
 
 TEST_P(Mhz19TestWithSpanPoint, CalibratesToSpanPoint) {
-  EXPECT_CALL(sensor, writePacket(::internal::Mhz19CommandCalibrateToSpanPoint,
-                                  low, high, 0, 0, 0));
-  EXPECT_TRUE(sensor.calibrateToSpanPoint(spanPoint));
+  EXPECT_CALL(fakeSensor, sendCommand(_))
+      .WillOnce(Invoke([&](const uint8_t* command) {
+        EXPECT_EQ(command[0], 0xFF);
+        EXPECT_EQ(command[1], 0x01);
+        EXPECT_EQ(command[2], 0x88);
+        EXPECT_EQ(command[3], high);
+        EXPECT_EQ(command[4], low);
+        EXPECT_EQ(command[5], 0x00);
+        EXPECT_EQ(command[6], 0x00);
+        EXPECT_EQ(command[7], 0x00);
+        EXPECT_EQ(command[8], Mhz19::calculatePacketCheckSum(command));
+        return true;
+      }));
+
+  EXPECT_TRUE(fakeSensor.calibrateToSpanPoint(spanPoint));
 }
 
 TEST_P(Mhz19TestWithWrongSpanPoint, CalibratesToSpanPointWhenWrongSpanPoint) {
-  EXPECT_CALL(sensor, writePacket(_, _, _, _, _, _)).Times(0);
-  EXPECT_FALSE(sensor.calibrateToSpanPoint(spanPoint));
+  EXPECT_CALL(fakeSensor, sendCommand(_)).Times(0);
+  EXPECT_FALSE(fakeSensor.calibrateToSpanPoint(spanPoint));
 }
 
 TEST_F(Mhz19Test, CalculatesPacketCheckSum) {
-  uint8_t packet1[::internal::Mhz19PacketLength] = {0, 2, 3, 4, 5, 6, 7, 8, 0};
-  uint8_t packet2[::internal::Mhz19PacketLength] = {0, 1,  3,  5, 7,
-                                                    9, 11, 13, 0};
+  uint8_t packet1[Mhz19::PacketLength] = {0, 2, 3, 4, 5, 6, 7, 8, 0};
+  uint8_t packet2[Mhz19::PacketLength] = {0, 1, 3, 5, 7, 9, 11, 13, 0};
 
   EXPECT_EQ(Mhz19::calculatePacketCheckSum(packet1), 221);
   EXPECT_EQ(Mhz19::calculatePacketCheckSum(packet2), 207);
 }
 
-TEST_F(Mhz19TestWithSerial, ReadsPacket) {
-  EXPECT_CALL(*arduino, millis())
-      .WillOnce(Return(0))
-      .WillOnce(Return(100))
-      .WillOnce(Return(200));
-  EXPECT_CALL(serial, available())
-      .WillOnce(Return(0))
-      .WillOnce(Return(0))
-      .WillOnce(Return(::internal::Mhz19PacketLength));
-  EXPECT_CALL(serial, readBytes(_, ::internal::Mhz19PacketLength))
-      .WillOnce(Invoke([&](uint8_t* bytes, size_t length) {
-        bytes[0] = 0xFF;
-        bytes[1] = ::internal::Mhz19CommandGetCarbonDioxide;
-        bytes[2] = 3;
-        bytes[3] = 5;
-        bytes[4] = 7;
-        bytes[5] = 9;
-        bytes[6] = 11;
-        bytes[7] = 13;
-        bytes[8] = 74;
-        return ::internal::Mhz19PacketLength;
-      }));
+TEST_F(Mhz19Test, SendsCommand) {
+  {
+    InSequence s;
+    EXPECT_CALL(serial, write(Mhz19::CommandRead, Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0xFF;
+          packet[1] = Mhz19::CommandRead[2];
+          packet[2] = 3;
+          packet[3] = 5;
+          packet[4] = 7;
+          packet[5] = 9;
+          packet[6] = 11;
+          packet[7] = 13;
+          packet[8] = 74;
+          return Mhz19::PacketLength;
+        }));
+  }
 
-  uint8_t packet[::internal::Mhz19PacketLength];
-  EXPECT_TRUE(
-      sensor.readPacket(::internal::Mhz19CommandGetCarbonDioxide, packet));
-  EXPECT_EQ(packet[0], 0xFF);
-  EXPECT_EQ(packet[1], ::internal::Mhz19CommandGetCarbonDioxide);
-  EXPECT_EQ(packet[2], 3);
-  EXPECT_EQ(packet[3], 5);
-  EXPECT_EQ(packet[4], 7);
-  EXPECT_EQ(packet[5], 9);
-  EXPECT_EQ(packet[6], 11);
-  EXPECT_EQ(packet[7], 13);
-  EXPECT_EQ(packet[8], 74);
+  EXPECT_TRUE(sensor.sendCommand(Mhz19::CommandRead));
 }
 
-TEST_F(Mhz19TestWithSerial, ReadsPacketWhenCorruptedStartingByte) {
-  EXPECT_CALL(*arduino, millis()).WillOnce(Return(0));
-  EXPECT_CALL(serial, available())
-      .WillOnce(Return(::internal::Mhz19PacketLength));
-  EXPECT_CALL(serial, readBytes(_, ::internal::Mhz19PacketLength))
-      .WillOnce(Invoke([&](uint8_t* bytes, size_t length) {
-        bytes[0] = 0;
-        return ::internal::Mhz19PacketLength;
-      }));
+TEST_F(Mhz19Test, SendsCommandWhenCorruptedStartingByte) {
+  {
+    InSequence s;
+    EXPECT_CALL(serial,
+                write(Mhz19::CommandCalibrateToZeroPoint, Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0;
+          return Mhz19::PacketLength;
+        }));
+  }
 
-  uint8_t packet[::internal::Mhz19PacketLength];
-  EXPECT_FALSE(
-      sensor.readPacket(::internal::Mhz19CommandGetCarbonDioxide, packet));
+  EXPECT_FALSE(sensor.sendCommand(Mhz19::CommandCalibrateToZeroPoint));
 }
 
-TEST_F(Mhz19TestWithSerial, ReadsPacketWhenCorruptedCommandByte) {
-  EXPECT_CALL(*arduino, millis()).WillOnce(Return(0));
-  EXPECT_CALL(serial, available())
-      .WillOnce(Return(::internal::Mhz19PacketLength));
-  EXPECT_CALL(serial, readBytes(_, ::internal::Mhz19PacketLength))
-      .WillOnce(Invoke([&](uint8_t* bytes, size_t length) {
-        bytes[0] = 0xFF;
-        bytes[1] = 0;
-        return ::internal::Mhz19PacketLength;
-      }));
+TEST_F(Mhz19Test, SendsCommandWhenCorruptedCommandByte) {
+  {
+    InSequence s;
+    EXPECT_CALL(serial, write(Mhz19::CommandEnableAutoBaseCalibration,
+                              Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0xFF;
+          packet[1] = 0;
+          return Mhz19::PacketLength;
+        }));
+  }
 
-  uint8_t packet[::internal::Mhz19PacketLength];
-  EXPECT_FALSE(
-      sensor.readPacket(::internal::Mhz19CommandSetAutoCalibration, packet));
+  EXPECT_FALSE(sensor.sendCommand(Mhz19::CommandEnableAutoBaseCalibration));
 }
 
-TEST_F(Mhz19TestWithSerial, ReadsPacketWhenWrongChecksum) {
-  EXPECT_CALL(*arduino, millis()).WillOnce(Return(0));
-  EXPECT_CALL(serial, available())
-      .WillOnce(Return(::internal::Mhz19PacketLength));
-  EXPECT_CALL(serial, readBytes(_, ::internal::Mhz19PacketLength))
-      .WillOnce(Invoke([&](uint8_t* bytes, size_t length) {
-        bytes[0] = 0xFF;
-        bytes[1] = ::internal::Mhz19CommandCalibrateToZeroPoint;
-        bytes[8] = 0;
-        return ::internal::Mhz19PacketLength;
-      }));
+TEST_F(Mhz19Test, ReadsPacketWhenWrongChecksum) {
+  {
+    InSequence s;
+    EXPECT_CALL(serial, write(Mhz19::CommandDisableAutoBaseCalibration,
+                              Mhz19::PacketLength));
+    EXPECT_CALL(serial, readBytes(_, Mhz19::PacketLength))
+        .WillOnce(Invoke([&](uint8_t* packet, size_t length) {
+          packet[0] = 0xFF;
+          packet[1] = Mhz19::CommandCalibrateToZeroPoint[2];
+          packet[8] = 0;
+          return Mhz19::PacketLength;
+        }));
+  }
 
-  uint8_t packet[::internal::Mhz19PacketLength];
-  EXPECT_FALSE(
-      sensor.readPacket(::internal::Mhz19CommandCalibrateToZeroPoint, packet));
-}
-
-TEST_F(Mhz19TestWithSerial, ReadsPacketWhenReachesTimeout) {
-  EXPECT_CALL(*arduino, millis()).WillOnce(Return(0)).WillOnce(Return(1000));
-  EXPECT_CALL(serial, available()).WillOnce(Return(0));
-  EXPECT_FALSE(sensor.readPacket(0, 0));
-}
-
-TEST_F(Mhz19TestWithSerial, WritesPacket) {
-  EXPECT_CALL(serial, available())
-      .WillOnce(Return(2))
-      .WillOnce(Return(1))
-      .WillOnce(Return(0));
-  EXPECT_CALL(serial, read()).Times(2);
-  EXPECT_CALL(serial, write(_, ::internal::Mhz19PacketLength));
-  EXPECT_CALL(serial, flush());
-
-  sensor.writePacket(::internal::Mhz19CommandGetCarbonDioxide, 2, 3, 4, 5, 6);
+  EXPECT_FALSE(sensor.sendCommand(Mhz19::CommandDisableAutoBaseCalibration));
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -216,9 +273,7 @@ INSTANTIATE_TEST_SUITE_P(
         MeasuringRangeSnapshot{
             static_cast<uint16_t>(Mhz19MeasuringRange::Ppm_3000), 11, 184},
         MeasuringRangeSnapshot{
-            static_cast<uint16_t>(Mhz19MeasuringRange::Ppm_5000), 19, 136},
-        MeasuringRangeSnapshot{
-            static_cast<uint16_t>(Mhz19MeasuringRange::Ppm_10000), 39, 16}));
+            static_cast<uint16_t>(Mhz19MeasuringRange::Ppm_5000), 19, 136}));
 
 INSTANTIATE_TEST_SUITE_P(SpanPoints, Mhz19TestWithSpanPoint,
                          Values(SpanPointSnapshot{1500, 5, 220},

@@ -9,11 +9,7 @@
 
 class Mhz19Mock : public Mhz19 {
  public:
-  MOCK_METHOD(bool, readPacket, (const uint8_t, uint8_t*), (const, override));
-  MOCK_METHOD(void, writePacket,
-              (const uint8_t, const uint8_t, const uint8_t, const uint8_t,
-               const uint8_t, const uint8_t),
-              (const, override));
+  MOCK_METHOD(bool, sendCommand, (const uint8_t*), (const, override));
 };
 
 #endif  // ARDUINO_MHZ19_TEST_NATIVE_MOCKS_MHZ19_H_

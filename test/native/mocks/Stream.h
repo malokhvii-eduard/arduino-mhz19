@@ -9,10 +9,8 @@
 class StreamMock {
  public:
   MOCK_METHOD(int, available, ());
-  MOCK_METHOD(int, read, ());
   MOCK_METHOD(size_t, readBytes, (uint8_t *, size_t));
   MOCK_METHOD(size_t, write, (const uint8_t *, size_t));
-  MOCK_METHOD(void, flush, ());
 };
 
 using Stream = StreamMock;
