@@ -23,8 +23,10 @@ jobs:
           find test -type f | xargs clang-format --dry-run -Werror
       - name: Use Node.js
         uses: actions/setup-node@v2
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli
       - name: Check Markdown files
-        run: npx markdownlint .
+        run: markdownlint .
 
   test:
     name: 🧪 Test
