@@ -16,9 +16,13 @@
   <p id="shields" align="center" markdown="1">
 
 [![License](https://img.shields.io/badge/license-MIT-3178C6?style=flat)](LICENSE)
+[![Husky](https://img.shields.io/badge/husky-enabled-brightgreen?style=flat)][github-husky]
+[![Commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen)][github-commitizen]
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)][github-semantic-release]
 [![Style Guide](https://img.shields.io/badge/code%20style-~google-4285F4?style=flat)][google-cppguide]
 ![clang-format](https://img.shields.io/badge/formatter-clang--format-262D3A?style=flat)
 [![markdownlint](https://img.shields.io/badge/linter-markdownlint-000?style=flat)][github-markdownlint]
+[![commitlint](https://img.shields.io/badge/linter-commitlint-F7B93E?style=flat)][github-commitlint]
 [![Tested on Arduino Uno](https://img.shields.io/badge/tested%20on-arduino%20uno-00979D)][arduino-uno]
 [![Tested on Arduino Nano](https://img.shields.io/badge/tested%20on-arduino%20nano-00979D)][arduino-nano]
 [![Tested on NodeMCU](https://img.shields.io/badge/tested%20on-nodemcu-E7352C)][nodemcu]
@@ -73,13 +77,10 @@ locate your downloaded ZIP file. Afterward, you should receive a
 
 ### :eyes: Usage
 
-There are various [examples](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/examples)
-to demonstrate usage of the library. The examples are listed below:
-
-- [HardwareSerial.ino](examples/HardwareSerial/HardwareSerial.ino) &ndash; read
-carbon dioxide over hardware [UART][uart]
-- [SoftwareSerial.ino](examples/SoftwareSerial/SoftwareSerial.ino) &ndash; read
-carbon dioxide over software [UART][uart]
+There is only one [example](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/examples),
+but comprehensive, to demonstrate usage of the library. See
+[Basic.ino](examples/Basic/Basic.ino) to see how to read carbon dioxide over
+software [UART][uart].
 
 ## :question: FAQs
 
@@ -100,9 +101,20 @@ carbon dioxide over software [UART][uart]
 - `Mhz19MeasuringRange::Ppm_2000`
 - `Mhz19MeasuringRange::Ppm_3000`
 - `Mhz19MeasuringRange::Ppm_5000`
-- `Mhz19MeasuringRange::Ppm_10000`
 
 <!-- FAQ 3 -->
+### :raising_hand_man: What is automatic baseline correction?
+
+:point_right: Sensor itself do zero point judgment and automatic
+calibration procedure intelligently after a continuous operation period.
+The automatic calibration cycle is every 24 hours after powered on. The zero
+point of automatic calibration is 400ppm. The default setting is with built-in
+automatic calibration function if no special request. This function is usually
+suitable for indoor air quality monitor such as offices, schools and homes, not
+suitable for greenhouse, farm and refrigeratory where this function should be
+off.
+
+<!-- FAQ 4 -->
 ### :raising_hand_man: How does it work?
 
 :point_right: You can explore [unit tests](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/test/native)
@@ -118,8 +130,11 @@ to see the behavior of all library members.
 [![Arduino](https://img.shields.io/badge/Arduino-00979D?logo=arduino&logoColor=fff&style=flat)][github-arduino]
 [![Google Test](https://img.shields.io/badge/Google%20Test-4285F4?logo=google&logoColor=fff&style=flat)][github-googletest]
 [![gcovr](https://img.shields.io/badge/gcovr-A42E2B?logo=gnu&logoColor=fff&style=flat)][github-gcovr]
+[![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff&style=flat)][github-npm]
 ![clang-format](https://img.shields.io/badge/clang--format-262D3A?logo=llvm&logoColor=fff&style=flat)
 [![markdownlint](https://img.shields.io/badge/markdownlint-000?logo=markdown&logoColor=fff&style=flat)][github-markdownlint]
+[![commitlint](https://img.shields.io/badge/commitlint-F7B93E?logo=c&logoColor=000&style=flat)][github-commitlint]
+[![semantic-release](https://img.shields.io/badge/semantic--release-494949?logo=semanticrelease&logoColor=fff&style=flat)][github-semantic-release]
 [![MH-Z19](https://img.shields.io/badge/MH--Z19-2088FF?logo=weasyl&logoColor=fff&style=flat)][winsen-mhz19-datasheet]
 [![Shields.io](https://img.shields.io/badge/Shields.io-000?logo=shieldsdotio&logoColor=fff&style=flat)][shields]
 [![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=fff&style=flat)][git-scm]
@@ -155,11 +170,16 @@ for more information.
 [github-actions]: https://docs.github.com/en/actions
 [github-arduino-ide]:  https://github.com/arduino/Arduino
 [github-arduino]: https://github.com/arduino
+[github-commitizen]: https://github.com/commitizen/cz-cli
+[github-commitlint]: https://github.com/conventional-changelog/commitlint
 [github-gcovr]: https://github.com/gcovr/gcovr
 [github-googletest]: https://github.com/google/googletest
+[github-husky]: https://github.com/typicode/husky
 [github-linux]: https://github.com/torvalds/linux
 [github-markdownlint]: https://github.com/DavidAnson/markdownlint
+[github-npm]: https://github.com/npm/cli
 [github-platformio]: https://github.com/platformio
+[github-semantic-release]: https://github.com/semantic-release/semantic-release
 [github-simple-icons]: https://github.com/simple-icons/simple-icons
 [github]: https://github.com
 
@@ -177,4 +197,4 @@ for more information.
 [shields]: https://shields.io
 [uart]: https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter
 [wemos-d1]: https://www.wemos.cc/en/latest/d1/d1_mini.html
-[winsen-mhz19-datasheet]: https://www.winsen-sensor.com/d/files/PDF/Infrared%20Gas%20Sensor/NDIR%20CO2%20SENSOR/MH-Z19%20CO2%20Ver1.0.pdf
+[winsen-mhz19-datasheet]: https://www.winsen-sensor.com/d/files/infrared-gas-sensor/mh-z19b-co2-ver1_0.pdf
