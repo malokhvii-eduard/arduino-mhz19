@@ -36,18 +36,18 @@
 
 ---
 
-## :tada: Features
+## 🎉 Features
 
-- :rocket: Easy to use
-- :clamp: Zero dependencies
-- :gear:  Hardware or software [UART][uart]
-- :test_tube: 100% code coverage
-- :alembic: Tested on: [Arduino Uno][arduino-uno], [Arduino Nano][arduino-nano],
+- 🚀 Easy to use
+- 🗜️ Zero dependencies
+- ⚙️ Hardware or software [UART][uart]
+- 🧪 100% code coverage
+- ⚗️ Tested on: [Arduino Uno][arduino-uno], [Arduino Nano][arduino-nano],
 [NodeMCU][nodemcu], [Wemos D1][wemos-d1]
 
-## :sparkles: Getting Started
+## ✨ Getting Started
 
-### :package: Installation
+### 📦 Installation
 
 <details>
   <summary>
@@ -57,7 +57,7 @@
 
 Run `pio lib install "malokhvii-eduard/arduino-mhz19"` or declare in
 `platformio.ini` configuration file using `lib_deps`
-[option][platformio-lib-deps]. Enjoy! :tada::+1:
+[option][platformio-lib-deps]. Enjoy! 🎉👍
 
 </details>
 
@@ -71,30 +71,30 @@ Download `Mhz19.zip` from release assets. Once downloaded, go to the
 [Arduino IDE][github-arduino-ide] and click
 `Sketch > Include Library > Add .zip Library`. In the file dialogue that opens,
 locate your downloaded ZIP file. Afterward, you should receive a
-`Library Added` message just above the debug window. Enjoy! :tada::+1:
+`Library Added` message just above the debug window. Enjoy! 🎉👍
 
 </details>
 
-### :eyes: Usage
+### 👀 Usage
 
 There is only one [example](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/examples),
 but comprehensive, to demonstrate usage of the library. See
 [Basic.ino](examples/Basic/Basic.ino) to see how to read carbon dioxide over
 software [UART][uart].
 
-## :question: FAQs
+## ❓ FAQs
 
 <!-- FAQ 1 -->
-### :raising_hand_man: In which units carbon dioxide is measured?
+### 🙋‍♂️ In which units carbon dioxide is measured?
 <!-- markdownlint-enable MD013 -->
 
-:point_right: The carbon dioxide is measured in
+👉 The carbon dioxide is measured in
 [parts-per-million][parts-per-notation] (*symbol:* `ppm`).
 
 <!-- FAQ 2 -->
-### :raising_hand_man: How to set a measuring range?
+### 🙋‍♂️ How to set a measuring range?
 
-:point_right: You can set a measuring range by call of
+👉 You can set a measuring range by call of
 `Mhz19::setMeasuringRange()`. The measuring ranges are listed below:
 
 - `Mhz19MeasuringRange::Ppm_1000`
@@ -103,9 +103,9 @@ software [UART][uart].
 - `Mhz19MeasuringRange::Ppm_5000`
 
 <!-- FAQ 3 -->
-### :raising_hand_man: What is automatic baseline correction?
+### 🙋‍♂️ What is automatic baseline correction?
 
-:point_right: Sensor itself do zero point judgment and automatic
+👉 Sensor itself do zero point judgment and automatic
 calibration procedure intelligently after a continuous operation period.
 The automatic calibration cycle is every 24 hours after powered on. The zero
 point of automatic calibration is 400ppm. The default setting is with built-in
@@ -115,12 +115,12 @@ suitable for greenhouse, farm and refrigeratory where this function should be
 off.
 
 <!-- FAQ 4 -->
-### :raising_hand_man: How does it work?
+### 🙋‍♂️ How does it work?
 
-:point_right: You can explore [unit tests](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/test/native)
+👉 You can explore [unit tests](https://github.com/malokhvii-eduard/arduino-mhz19/tree/master/test/native)
 to see the behavior of all library members.
 
-## :hammer_and_wrench: Tech Stack
+## 🛠️ Tech Stack
 
 <!-- markdownlint-disable MD013 -->
 [![EditorConfig](https://img.shields.io/badge/EditorConfig-FEFEFE?logo=editorconfig&logoColor=000&style=flat)][editorconfig]
@@ -132,6 +132,7 @@ to see the behavior of all library members.
 [![gcovr](https://img.shields.io/badge/gcovr-A42E2B?logo=gnu&logoColor=fff&style=flat)][github-gcovr]
 [![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff&style=flat)][github-npm]
 ![clang-format](https://img.shields.io/badge/clang--format-262D3A?logo=llvm&logoColor=fff&style=flat)
+[![Prettier](https://img.shields.io/badge/Prettier-F7B93E?logo=prettier&logoColor=fff&style=flat)][github-prettier]
 [![markdownlint](https://img.shields.io/badge/markdownlint-000?logo=markdown&logoColor=fff&style=flat)][github-markdownlint]
 [![commitlint](https://img.shields.io/badge/commitlint-F7B93E?logo=c&logoColor=000&style=flat)][github-commitlint]
 [![semantic-release](https://img.shields.io/badge/semantic--release-494949?logo=semanticrelease&logoColor=fff&style=flat)][github-semantic-release]
@@ -142,9 +143,9 @@ to see the behavior of all library members.
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?logo=githubactions&logoColor=fff&style=flat)][github-actions]
 <!-- markdownlint-enable MD013 -->
 
-## :writing_hand: Contributing
+## ✍️ Contributing
 
-:+1::tada: *First off, thanks for taking the time to contribute!* :tada::+1:
+👍🎉 *First off, thanks for taking the time to contribute!* 🎉👍
 
 Contributions are what make the open source community such an amazing place to
 be learn, inspire, and create. Any contributions you make are **greatly
@@ -156,11 +157,11 @@ appreciated**.
 4. Push to the *Branch* (`git push origin feature/awesome-feature`)
 5. Open a *Pull Request*
 
-## :sparkling_heart: Like this project?
+## 💖 Like this project?
 
 Leave a :star: if you think this project is cool or useful for you.
 
-## :warning: License
+## ⚠️ License
 
 `arduino-mhz1` is licenced under the MIT License. See the [LICENSE](LICENSE)
 for more information.
@@ -179,6 +180,7 @@ for more information.
 [github-markdownlint]: https://github.com/DavidAnson/markdownlint
 [github-npm]: https://github.com/npm/cli
 [github-platformio]: https://github.com/platformio
+[github-prettier]: https://github.com/prettier/prettier
 [github-semantic-release]: https://github.com/semantic-release/semantic-release
 [github-simple-icons]: https://github.com/simple-icons/simple-icons
 [github]: https://github.com
