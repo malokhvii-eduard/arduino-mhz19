@@ -19,7 +19,6 @@ jobs:
         run: sudo apt-get install clang-format
       - name: Check code style
         run: |
-          find include -type f | xargs clang-format --dry-run -Werror
           find src -type f | xargs clang-format --dry-run -Werror
           find test -type f | xargs clang-format --dry-run -Werror
       - name: Use Node.js
