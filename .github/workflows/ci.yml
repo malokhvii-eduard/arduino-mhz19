@@ -30,6 +30,8 @@ jobs:
         run: markdownlint .
       - name: Check compliance with Arduino library specification
         uses: arduino/arduino-lint-action@v1
+        with:
+          library-manager: update
 
   test:
     name: 🧪 Test
