@@ -22,8 +22,7 @@ jobs:
           mkdir -p Mhz19/examples/Basic
           cp LICENSE Mhz19
           cp library.properties Mhz19
-          cp include/Mhz19.h Mhz19/src
-          cp src/Mhz19.cc Mhz19/src
+          cp src/* Mhz19/src
           cp examples/Basic/*.ino Mhz19/examples/Basic
           zip -r Mhz19.zip Mhz19/*
       - name: Use Node.js
