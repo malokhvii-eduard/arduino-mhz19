@@ -61,6 +61,19 @@ Run `pio lib install "malokhvii-eduard/arduino-mhz19"` or declare in
 
 <details>
   <summary>
+    👉 Arduino Library Manager
+  </summary>
+  <br>
+
+Go to the [Arduino IDE][github-arduino-ide] and click
+`Tools > Manage Libraries`. In the library manager dialogue that opens,
+enter search query `Mhz19`. Afterward, find a library
+`Mhz19 by Eduard Malokhvii` and click `Install`. Enjoy! 🎉👍
+
+</details>
+
+<details>
+  <summary>
     👉 Arduino IDE
   </summary>
   <br>
