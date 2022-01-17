@@ -61,7 +61,7 @@ Run `pio lib install "malokhvii-eduard/arduino-mhz19"` or declare in
 
 <details>
   <summary>
-    👉 Arduino Library Manager
+    👉 Arduino IDE (Library Manager)
   </summary>
   <br>
 
@@ -74,7 +74,7 @@ enter search query `Mhz19`. Afterward, find a library
 
 <details>
   <summary>
-    👉 Arduino IDE
+    👉 Arduino IDE (Manual)
   </summary>
   <br>
 
