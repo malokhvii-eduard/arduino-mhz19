@@ -174,7 +174,7 @@ Leave a ⭐ if you think this project is cool or useful for you.
 
 ## ⚠️ License
 
-`arduino-mhz1` is licenced under the MIT License. See the [LICENSE](LICENSE)
+`arduino-mhz19` is licenced under the MIT License. See the [LICENSE](LICENSE)
 for more information.
 
 <!-- markdownlint-disable MD013 -->
