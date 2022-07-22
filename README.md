@@ -204,8 +204,6 @@ for more information.
 [nodemcu]: https://en.wikipedia.org/wiki/NodeMCU
 [parts-per-notation]: https://en.wikipedia.org/wiki/Parts-per_notation
 [platformio-lib-deps]: https://docs.platformio.org/en/latest/projectconf/section_env_library.html#lib-deps
-[platformio-lib-install]: https://docs.platformio.org/en/latest/core/userguide/lib/cmd_install.html
-[platformio-registry]: https://platformio.org/lib
 [shields]: https://shields.io
 [uart]: https://en.wikipedia.org/wiki/Universal_asynchronous_receiver-transmitter
 [wemos-d1]: https://www.wemos.cc/en/latest/d1/d1_mini.html
